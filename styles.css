@@ -11,9 +11,10 @@
   --shadow: 0 1px 3px rgba(20, 30, 60, .08), 0 6px 20px rgba(20, 30, 60, .06);
   --radius: 10px;
   --node-w: 200px;
-  /* org-chart spacing */
-  --gap-v: 40px;   /* vertical distance between a parent and its children */
-  --gap-h: 22px;   /* horizontal gap between sibling nodes */
+  /* org-chart spacing — connectors span two segments (parent→bar, bar→card),
+     so the total vertical gap between cards is 2 × --gap-v */
+  --gap-v: 26px;   /* height of each connector segment */
+  --gap-h: 20px;   /* horizontal padding around each node (half the sibling gap) */
 }
 
 * { box-sizing: border-box; }
@@ -130,38 +131,46 @@ ul.tree { display: flex; justify-content: center; }
 ul.subtree {
   display: flex;
   justify-content: center;
-  padding-top: var(--gap-v);
+  padding-top: var(--gap-v);   /* space for the parent → bar connector */
   position: relative;
 }
 li.node {
   position: relative;
-  padding: 0 var(--gap-h);
+  padding: var(--gap-v) var(--gap-h) 0;   /* top padding holds the bar → card connector */
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-/* connector lines */
+/* horizontal bar (border-top) split into two halves;
+   the right half also carries the vertical drop into the card (border-left) */
 li.node::before, li.node::after {
   content: "";
   position: absolute;
   top: 0;
-  height: var(--gap-v);
+  right: 50%;
   width: 50%;
+  height: var(--gap-v);
   border-top: 2px solid var(--line);
 }
-li.node::before { left: 0; }
-li.node::after { right: 0; border-left: 2px solid var(--line); }
-/* single child / first / last cleanup */
-li.node:only-child::before,
-li.node:only-child::after { display: none; }
-li.node:first-child::before { border: none; }
-li.node:last-child::after { border: none; }
-li.node:last-child::before { border-right: 2px solid var(--line); border-radius: 0; }
-li.node:first-child::after { border-left: 2px solid var(--line); }
+li.node::after {
+  right: auto;
+  left: 50%;
+  border-left: 2px solid var(--line);
+}
+/* trim the outer half of the bar at the ends of a row */
+li.node:first-child::before { border: 0; }
+li.node:last-child::after  { border: 0; }
+/* the last child's vertical drop comes from the left pseudo-element instead */
+li.node:last-child::before { border-right: 2px solid var(--line); }
 
-/* vertical drop from a parent to its children row */
-.subtree::before {
+/* a lone child keeps the same gap but shows a single straight vertical line
+   (drop the horizontal bar, keep the centered drop from ::after) */
+li.node:only-child::before { display: none; }
+li.node:only-child::after { border-top: 0; }
+
+/* vertical connector from a parent down to its children's horizontal bar */
+ul.subtree::before {
   content: "";
   position: absolute;
   top: 0;
@@ -169,7 +178,9 @@ li.node:first-child::after { border-left: 2px solid var(--line); }
   height: var(--gap-v);
   border-left: 2px solid var(--line);
 }
-/* root row: no top connectors */
+
+/* root row has no parent above it */
+ul.tree > li.node { padding-top: 0; }
 ul.tree > li.node::before,
 ul.tree > li.node::after { display: none; }
 
