@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>조직도 편집기</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__brand">
+      <span class="topbar__logo">🗂️</span>
+      <h1>조직도 편집기</h1>
+    </div>
+    <div class="topbar__search">
+      <input id="searchInput" type="search" placeholder="이름 · 직책 · 부서 검색…" autocomplete="off" />
+    </div>
+    <div class="topbar__actions">
+      <button id="addRootBtn" class="btn btn--primary" title="최상위 부서/구성원 추가">＋ 최상위 추가</button>
+      <button id="expandAllBtn" class="btn" title="모두 펼치기">모두 펼치기</button>
+      <button id="collapseAllBtn" class="btn" title="모두 접기">모두 접기</button>
+      <div class="menu">
+        <button id="dataMenuBtn" class="btn">데이터 ▾</button>
+        <div id="dataMenu" class="menu__dropdown" hidden>
+          <button id="importBtn" class="menu__item">JSON 가져오기</button>
+          <button id="exportBtn" class="menu__item">JSON 내보내기</button>
+          <button id="printBtn" class="menu__item">인쇄 / PDF</button>
+          <button id="sampleBtn" class="menu__item">샘플 데이터 불러오기</button>
+          <button id="clearBtn" class="menu__item menu__item--danger">전체 초기화</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <div id="chart" class="chart" tabindex="0">
+      <div id="chartInner" class="chart__inner"></div>
+      <div id="emptyState" class="empty" hidden>
+        <p class="empty__title">조직도가 비어 있습니다</p>
+        <p class="empty__sub">「＋ 최상위 추가」로 시작하거나 샘플 데이터를 불러오세요.</p>
+        <button id="emptySampleBtn" class="btn btn--primary">샘플 데이터 불러오기</button>
+      </div>
+    </div>
+    <div class="statusbar">
+      <span id="statCount">구성원 0명</span>
+      <span id="statSaved" class="statusbar__saved"></span>
+      <div class="zoom">
+        <button id="zoomOut" class="btn btn--icon" title="축소">－</button>
+        <span id="zoomLevel">100%</span>
+        <button id="zoomIn" class="btn btn--icon" title="확대">＋</button>
+        <button id="zoomReset" class="btn btn--icon" title="원래대로">⟲</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Edit dialog -->
+  <dialog id="editDialog" class="dialog">
+    <form method="dialog" id="editForm">
+      <h2 id="dialogTitle">구성원 편집</h2>
+      <label class="field">
+        <span>이름 <em>*</em></span>
+        <input id="fName" name="name" type="text" required maxlength="60" />
+      </label>
+      <label class="field">
+        <span>직책</span>
+        <input id="fTitle" name="title" type="text" maxlength="60" placeholder="예: 팀장, 매니저" />
+      </label>
+      <label class="field">
+        <span>부서</span>
+        <input id="fDept" name="dept" type="text" maxlength="60" placeholder="예: 엔지니어링" />
+      </label>
+      <label class="field">
+        <span>이메일</span>
+        <input id="fEmail" name="email" type="email" maxlength="120" placeholder="name@company.com" />
+      </label>
+      <label class="field">
+        <span>색상 태그</span>
+        <span class="swatches" id="swatches"></span>
+      </label>
+      <div class="dialog__actions">
+        <button type="button" id="dialogCancel" class="btn">취소</button>
+        <button type="submit" class="btn btn--primary">저장</button>
+      </div>
+    </form>
+  </dialog>
+
+  <input id="importFile" type="file" accept="application/json,.json" hidden />
+
+  <script src="app.js"></script>
+</body>
+</html>
