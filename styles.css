@@ -10,7 +10,10 @@
   --line: #c2ccdd;
   --shadow: 0 1px 3px rgba(20, 30, 60, .08), 0 6px 20px rgba(20, 30, 60, .06);
   --radius: 10px;
-  --node-w: 190px;
+  --node-w: 200px;
+  /* org-chart spacing */
+  --gap-v: 40px;   /* vertical distance between a parent and its children */
+  --gap-h: 22px;   /* horizontal gap between sibling nodes */
 }
 
 * { box-sizing: border-box; }
@@ -18,10 +21,13 @@
 html, body {
   margin: 0;
   height: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Apple SD Gothic Neo",
-    "Malgun Gothic", "Noto Sans KR", Roboto, sans-serif;
+  font-family: "Pretendard", "Pretendard Variable", -apple-system, BlinkMacSystemFont,
+    system-ui, "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", Roboto, sans-serif;
   color: var(--text);
   background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
 }
 
 body { display: flex; flex-direction: column; }
@@ -105,7 +111,7 @@ body { display: flex; flex-direction: column; }
 .chart {
   flex: 1;
   overflow: auto;
-  padding: 48px 32px;
+  padding: 56px 44px;
   position: relative;
   outline: none;
 }
@@ -124,12 +130,12 @@ ul.tree { display: flex; justify-content: center; }
 ul.subtree {
   display: flex;
   justify-content: center;
-  padding-top: 26px;
+  padding-top: var(--gap-v);
   position: relative;
 }
 li.node {
   position: relative;
-  padding: 0 12px;
+  padding: 0 var(--gap-h);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -140,7 +146,7 @@ li.node::before, li.node::after {
   content: "";
   position: absolute;
   top: 0;
-  height: 26px;
+  height: var(--gap-v);
   width: 50%;
   border-top: 2px solid var(--line);
 }
@@ -160,7 +166,7 @@ li.node:first-child::after { border-left: 2px solid var(--line); }
   position: absolute;
   top: 0;
   left: 50%;
-  height: 26px;
+  height: var(--gap-v);
   border-left: 2px solid var(--line);
 }
 /* root row: no top connectors */
@@ -175,7 +181,7 @@ ul.tree > li.node::after { display: none; }
   border-top: 4px solid var(--card-color, var(--primary));
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 12px 14px 10px;
+  padding: 14px 16px 12px;
   position: relative;
   cursor: grab;
   transition: box-shadow .12s, transform .08s;
